@@ -4,15 +4,15 @@ function Footer() {
   return (
     <footer className="footer">
       <div>
-        Musterhochschule
+        Dream University
         <br />
-        Musterstraße 123
+        Dream Street 123
         <br />
-        12345 Musterstadt
+        12345 Dream City
         <br />
         Tel.: 01234 56789
         <br />
-        E-Mail: muster@hochschule.de
+        E-Mail: info@dreamuniversity.edu
         <br />
       </div>
     </footer>

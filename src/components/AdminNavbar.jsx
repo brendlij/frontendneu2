@@ -14,7 +14,7 @@ function AdminNavbar(props) {
             alt="Uniplaner Logo"
             style={{ height: "40px", marginRight: "10px" }}
           />
-          Uniplaner
+          Lectivate
         </a>
 
         <button
@@ -35,17 +35,23 @@ function AdminNavbar(props) {
         >
           <ul className="navbar-nav">
             <li className="nav-item">
-              <a className="nav-link" href="/">
+              <a className="nav-link d-flex align-items-center" href="/">
+                <i className="bi bi-house-door-fill me-1"></i>
                 Home
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/admin">
-                Planen
+              <a className="nav-link d-flex align-items-center" href="/admin">
+                <i className="bi bi-gear-fill me-1"></i>
+                Organize
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/admin/lecturer-dashboard">
+              <a
+                className="nav-link d-flex align-items-center"
+                href="/admin/lecturer-dashboard"
+              >
+                <i className="bi bi-person-fill me-1"></i>
                 Dashboard
               </a>
             </li>

@@ -17,7 +17,6 @@ import SemesterList from "./components/semester/SemesterList";
 import AddSemester from "./components/semester/AddSemester";
 import StudyClassList from "./components/studyclass/StudyClassList";
 import AddStudyClass from "./components/studyclass/AddStudyClass";
-
 import EditLecture from "./components/lecture/EditLecture";
 import EditSemester from "./components/semester/EditSemester";
 import EditStudyClass from "./components/studyclass/EditStudyClass";
@@ -25,12 +24,14 @@ import EditLecturer from "./components/lecturer/EditLecturer";
 import EditLectureDate from "./components/lectureDate/EditLectureDate";
 import EditStudyProgram from "./components/studyprogram/EditStudyProgram";
 import LecturerDashboard from "./components/dashboard/LecturerDashboard";
+import About from "./components/About";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomeView />} />
+        <Route path="/about" element={<About />} />
         <Route path="/admin" element={<AdminView />}>
           <Route index element={<StudyProgramList />} />
           <Route path="/admin/studyprograms" element={<StudyProgramList />} />
@@ -48,7 +49,6 @@ function App() {
           <Route path="/admin/add-semester" element={<AddSemester />} />
           <Route path="/admin/studyclasses" element={<StudyClassList />} />
           <Route path="/admin/add-studyclass" element={<AddStudyClass />} />
-
           <Route path="/admin/edit-lecture/:id" element={<EditLecture />} />
           <Route path="/admin/edit-semester/:id" element={<EditSemester />} />
           <Route

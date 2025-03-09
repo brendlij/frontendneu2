@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css"; // Ensure Bootstrap is imported
 import Logo from "../assets/offenes-buch.png"; // Pfad zum Logo
 
@@ -9,14 +10,14 @@ function Header() {
       style={{ backgroundColor: "#262262" }}
     >
       <div className="container">
-        <a className="navbar-brand d-flex align-items-center" href="#">
+        <Link className="navbar-brand d-flex align-items-center" to="/">
           <img
             src={Logo}
             alt="Logo"
             style={{ height: "40px", marginRight: "10px" }}
           />
-          Uniplaner
-        </a>
+          Dream University
+        </Link>
 
         <button
           className="navbar-toggler"
@@ -36,19 +37,22 @@ function Header() {
         >
           <ul className="navbar-nav">
             <li className="nav-item">
-              <a className="nav-link" href="/">
+              <Link className="nav-link d-flex align-items-center" to="/">
+                <i className="bi bi-house-door-fill me-1"></i>
                 Home
-              </a>
+              </Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/admin">
-                Planen
-              </a>
+              <Link className="nav-link d-flex align-items-center" to="/admin">
+                <i className="bi bi-gear-fill me-1"></i>
+                Organize
+              </Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#Impressum">
-                Impressum
-              </a>
+              <Link className="nav-link d-flex align-items-center" to="/about">
+                <i className="bi bi-info-circle-fill me-1"></i>
+                About
+              </Link>
             </li>
           </ul>
         </div>

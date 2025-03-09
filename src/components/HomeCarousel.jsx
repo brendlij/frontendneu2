@@ -9,28 +9,28 @@ import Slidepic5 from "../assets/Slidepic5.jpg";
 const data = [
   {
     image: Slidepic1,
-    caption: "Freude und Spaß am Lernen",
-    description: "Entdecke die Welt der Mathematik und Informatik",
+    caption: "Joy and Fun in Learning",
+    description: "Discover the world of Mathematics and Computer Science",
   },
   {
     image: Slidepic2,
-    caption: "Zusammenarbeit und Teamwork",
-    description: "Gemeinsam lernen und wachsen",
+    caption: "Collaboration and Teamwork",
+    description: "Learning and growing together",
   },
   {
     image: Slidepic3,
-    caption: "Chancengleichheit",
-    description: "Platz für Alle. Wir fördern Vielfalt",
+    caption: "Equal Opportunities",
+    description: "Space for all. Embracing diversity",
   },
   {
     image: Slidepic4,
-    caption: "Ambiente und Atmosphäre",
-    description: "Lernen in einer angenehmen Umgebung",
+    caption: "Ambience and Atmosphere",
+    description: "Learning in a pleasant environment",
   },
   {
     image: Slidepic5,
-    caption: "Organisiert und Strukturiert",
-    description: "Wir helfen dir, deinen Weg zu finden",
+    caption: "Organized and Structured",
+    description: "We help you find your path",
   },
 ];
 
@@ -51,7 +51,12 @@ function HomeCarousel() {
         overflow: "hidden",
       }}
     >
-      <Carousel activeIndex={index} onSelect={handleSelect} interval={3000}>
+      <Carousel
+        activeIndex={index}
+        onSelect={handleSelect}
+        interval={5000}
+        pause={false} // verhindert, dass das Karussell stoppt
+      >
         {data.map((slide, i) => (
           <Carousel.Item key={i} style={{ height: "100vh" }}>
             <img
