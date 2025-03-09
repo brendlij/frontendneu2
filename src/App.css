@@ -43,8 +43,8 @@
 }
 
 :root {
-  --primary-color: #216869;
-  --secondary-color: #49a078;
+  --primary-color: #4384ce;
+  --secondary-color: #55ccf0;
   --secondary-hover-color: #9cc5a1;
   --light-grey: rgb(241, 243, 243);
   --darker-grey: rgb(212, 218, 218);
@@ -181,4 +181,17 @@ h6 {
   to {
     transform: rotate(360deg);
   }
+}
+
+.carousel-custom-caption {
+  background-color: rgba(33, 104, 105, 0.8) !important;
+  border-radius: 10px;
+  padding: 10px;
+  display: inline-block;
+  z-index: 10;
+}
+
+.carousel-custom-caption h3,
+.carousel-custom-caption p {
+  color: #fff !important;
 }

@@ -15,40 +15,88 @@ function EditStudyProgram() {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  // Felder des StudyProgram
   const [name, setName] = useState("");
   const [shortName, setShortName] = useState("");
 
-  // Optionslisten
+  // Optionen (alle Vorlesungen/Dozenten)
   const [lectures, setLectures] = useState([]);
   const [lecturersData, setLecturersData] = useState([]);
 
-  // Ausgewählte IDs
-  const [selectedLectures, setSelectedLectures] = useState([]);
-  const [selectedLecturers, setSelectedLecturers] = useState([]);
+  // Zustände für die ausgewählten IDs (als Strings)
+  const [selectedLectureIds, setSelectedLectureIds] = useState([]);
+  const [selectedLecturerIds, setSelectedLecturerIds] = useState([]);
 
-  // Initiale Zuordnungen speichern
-  const [initialSelectedLectures, setInitialSelectedLectures] = useState([]);
-  const [initialSelectedLecturers, setInitialSelectedLecturers] = useState([]);
+  // Zustände für die initialen Zuordnungen (für den Vergleich beim Speichern)
+  const [initialSelectedLectureIds, setInitialSelectedLectureIds] = useState(
+    []
+  );
+  const [initialSelectedLecturerIds, setInitialSelectedLecturerIds] = useState(
+    []
+  );
 
+  // Laden des bestehenden StudyProgram inklusive Transformation der Referenzen
   useEffect(() => {
     async function fetchData() {
       try {
         const studyProgram = await fetchStudyProgram(id);
+        console.log("Fetched study program from backend:", studyProgram);
+
+        // Name und ShortName übernehmen
         setName(studyProgram.name);
         setShortName(studyProgram.shortName);
+
+        // Vorlesungen (lectures):
+        let lectureIds = [];
         if (studyProgram.lectures && studyProgram.lectures.length > 0) {
-          const lectureIds = studyProgram.lectures.map((lecture) =>
-            String(lecture.id)
-          );
-          setSelectedLectures(lectureIds);
-          setInitialSelectedLectures(lectureIds);
+          // Prüfen, ob das erste Element eine Zahl ist (also nur ID)
+          if (typeof studyProgram.lectures[0] === "number") {
+            // Hole alle vollständigen Vorlesungen und erstelle ein Lookup
+            const allLectures = await fetchLectures();
+            const lecturesLookup = allLectures.reduce((acc, lecture) => {
+              acc[lecture.id] = lecture;
+              return acc;
+            }, {});
+            lectureIds = studyProgram.lectures.map((lectureId) =>
+              String(lecturesLookup[lectureId]?.id)
+            );
+          } else {
+            // Es sind bereits vollständige Objekte
+            lectureIds = studyProgram.lectures.map((lecture) =>
+              String(lecture.id)
+            );
+          }
+          console.log("Lecture IDs found:", lectureIds);
+          setSelectedLectureIds(lectureIds);
+          setInitialSelectedLectureIds(lectureIds);
+        } else {
+          setSelectedLectureIds([]);
+          setInitialSelectedLectureIds([]);
         }
+
+        // Dozenten (lecturers):
+        let lecturerIds = [];
         if (studyProgram.lecturers && studyProgram.lecturers.length > 0) {
-          const lecturerIds = studyProgram.lecturers.map((lecturer) =>
-            String(lecturer.id)
-          );
-          setSelectedLecturers(lecturerIds);
-          setInitialSelectedLecturers(lecturerIds);
+          if (typeof studyProgram.lecturers[0] === "number") {
+            const allLecturers = await fetchLecturers();
+            const lecturersLookup = allLecturers.reduce((acc, lecturer) => {
+              acc[lecturer.id] = lecturer;
+              return acc;
+            }, {});
+            lecturerIds = studyProgram.lecturers.map((lecturerId) =>
+              String(lecturersLookup[lecturerId]?.id)
+            );
+          } else {
+            lecturerIds = studyProgram.lecturers.map((lecturer) =>
+              String(lecturer.id)
+            );
+          }
+          console.log("Lecturer IDs found:", lecturerIds);
+          setSelectedLecturerIds(lecturerIds);
+          setInitialSelectedLecturerIds(lecturerIds);
+        } else {
+          setSelectedLecturerIds([]);
+          setInitialSelectedLecturerIds([]);
         }
       } catch (error) {
         console.error("Error fetching study program:", error.message);
@@ -57,15 +105,22 @@ function EditStudyProgram() {
     fetchData();
   }, [id]);
 
+  // Laden aller verfügbaren Vorlesungen und Dozenten für die Select-Listen
   useEffect(() => {
     fetchLectures()
-      .then((data) => setLectures(data))
+      .then((data) => {
+        console.log("Fetched lectures (all):", data);
+        setLectures(data);
+      })
       .catch((error) =>
         console.error("Error fetching lectures:", error.message)
       );
 
     fetchLecturers()
-      .then((data) => setLecturersData(data))
+      .then((data) => {
+        console.log("Fetched lecturers (all):", data);
+        setLecturersData(data);
+      })
       .catch((error) =>
         console.error("Error fetching lecturers:", error.message)
       );
@@ -74,40 +129,55 @@ function EditStudyProgram() {
   async function handleSave(e) {
     e.preventDefault();
     const studyProgram = { id, name, shortName };
+    console.log("Saving study program:", studyProgram);
+
     try {
+      // Update StudyProgram (nur Name/ShortName – Merge-Update im Backend)
       const updatedStudyProgram = await saveStudyProgram(studyProgram);
       const spId = updatedStudyProgram.id;
+      console.log("Study program saved with ID:", spId);
 
-      // Berechne, welche Lectures entfernt wurden:
-      const lecturesToRemove = initialSelectedLectures.filter(
-        (id) => !selectedLectures.includes(id)
+      // Vorlesungen aktualisieren:
+      const lecturesToRemove = initialSelectedLectureIds.filter(
+        (oldId) => !selectedLectureIds.includes(oldId)
       );
-      // Füge neue hinzu:
-      const lecturesToAdd = selectedLectures.filter(
-        (id) => !initialSelectedLectures.includes(id)
+      const lecturesToAdd = selectedLectureIds.filter(
+        (newId) => !initialSelectedLectureIds.includes(newId)
       );
+      console.log("Lectures to remove:", lecturesToRemove);
+      console.log("Lectures to add:", lecturesToAdd);
 
       for (const lectureId of lecturesToRemove) {
+        console.log(`Removing lecture ${lectureId} from study program ${spId}`);
         await removeLectureFromStudyProgram(spId, lectureId);
       }
       for (const lectureId of lecturesToAdd) {
+        console.log(`Adding lecture ${lectureId} to study program ${spId}`);
         await addLectureToStudyProgram(spId, lectureId);
       }
 
-      // Analog für Lecturers:
-      const lecturersToRemove = initialSelectedLecturers.filter(
-        (id) => !selectedLecturers.includes(id)
+      // Dozenten aktualisieren:
+      const lecturersToRemove = initialSelectedLecturerIds.filter(
+        (oldId) => !selectedLecturerIds.includes(oldId)
       );
-      const lecturersToAdd = selectedLecturers.filter(
-        (id) => !initialSelectedLecturers.includes(id)
+      const lecturersToAdd = selectedLecturerIds.filter(
+        (newId) => !initialSelectedLecturerIds.includes(newId)
       );
+      console.log("Lecturers to remove:", lecturersToRemove);
+      console.log("Lecturers to add:", lecturersToAdd);
+
       for (const lecturerId of lecturersToRemove) {
+        console.log(
+          `Removing lecturer ${lecturerId} from study program ${spId}`
+        );
         await removeLecturerFromStudyProgram(spId, lecturerId);
       }
       for (const lecturerId of lecturersToAdd) {
+        console.log(`Adding lecturer ${lecturerId} to study program ${spId}`);
         await addLecturerToStudyProgram(spId, lecturerId);
       }
 
+      console.log("Update completed. Navigating back...");
       navigate("/admin/studyprograms");
     } catch (error) {
       console.error("Error saving study program:", error);
@@ -151,9 +221,9 @@ function EditStudyProgram() {
                 <select
                   multiple
                   className="form-control"
-                  value={selectedLectures}
+                  value={selectedLectureIds}
                   onChange={(e) =>
-                    setSelectedLectures(
+                    setSelectedLectureIds(
                       Array.from(
                         e.target.selectedOptions,
                         (option) => option.value
@@ -161,11 +231,21 @@ function EditStudyProgram() {
                     )
                   }
                 >
-                  {lectures.map((lecture) => (
-                    <option key={lecture.id} value={String(lecture.id)}>
-                      {lecture.lectureName}
-                    </option>
-                  ))}
+                  {lectures.map((lecture, index) => {
+                    // Wenn lecture ein Objekt ist, nutze lecture.id, sonst nimm die Zahl selbst
+                    const key = lecture.id ? lecture.id : `lecture-${index}`;
+                    const value = lecture.id
+                      ? String(lecture.id)
+                      : String(lecture);
+                    const display = lecture.lectureName
+                      ? lecture.lectureName
+                      : `Lecture ${lecture}`;
+                    return (
+                      <option key={key} value={value}>
+                        {display}
+                      </option>
+                    );
+                  })}
                 </select>
               </div>
               <div className="mb-3">
@@ -173,9 +253,9 @@ function EditStudyProgram() {
                 <select
                   multiple
                   className="form-control"
-                  value={selectedLecturers}
+                  value={selectedLecturerIds}
                   onChange={(e) =>
-                    setSelectedLecturers(
+                    setSelectedLecturerIds(
                       Array.from(
                         e.target.selectedOptions,
                         (option) => option.value
@@ -183,11 +263,20 @@ function EditStudyProgram() {
                     )
                   }
                 >
-                  {lecturersData.map((lecturer) => (
-                    <option key={lecturer.id} value={String(lecturer.id)}>
-                      {lecturer.firstName} {lecturer.lastName}
-                    </option>
-                  ))}
+                  {lecturersData.map((lecturer, index) => {
+                    const key = lecturer.id ? lecturer.id : `lecturer-${index}`;
+                    const value = lecturer.id
+                      ? String(lecturer.id)
+                      : String(lecturer);
+                    const display = lecturer.firstName
+                      ? `${lecturer.firstName} ${lecturer.lastName}`
+                      : `Lecturer ${lecturer}`;
+                    return (
+                      <option key={key} value={value}>
+                        {display}
+                      </option>
+                    );
+                  })}
                 </select>
               </div>
               <button

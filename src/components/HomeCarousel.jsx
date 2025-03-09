@@ -60,7 +60,7 @@ function HomeCarousel() {
               alt="slider image"
               style={{ objectFit: "cover", width: "100%", height: "100vh" }}
             />
-            <Carousel.Caption>
+            <Carousel.Caption className="carousel-custom-caption">
               <h3>{slide.caption}</h3>
               <p>{slide.description}</p>
             </Carousel.Caption>

@@ -1,45 +1,58 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import 'bootstrap-icons/font/bootstrap-icons.css';
-import { deleteLecturer, fetchLecturers } from './LecturerService';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { deleteLecturer, fetchLecturers } from "./LecturerService";
 
 function LecturerList() {
   const [lecturers, setLecturers] = useState([]);
-  const navigator = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    findAll();
+    async function loadData() {
+      try {
+        const data = await fetchLecturers();
+        setLecturers(data);
+      } catch (error) {
+        console.error("Error fetching lecturers:", error.message);
+      }
+    }
+    loadData();
   }, []);
 
-  async function findAll() {
+  async function deleteLecturerById(id) {
     try {
-      const responseJson = await fetchLecturers();
-      setLecturers(responseJson);
+      await deleteLecturer(id);
+      const data = await fetchLecturers();
+      setLecturers(data);
     } catch (error) {
-      console.error(error.message);
+      console.error("Error deleting lecturer:", error.message);
     }
   }
 
   function addLecturer() {
-    navigator('/admin/add-lecturer');
-  }
-
-  async function deleteLecturerById(id) {
-    await deleteLecturer(id);
-    findAll();
+    navigate("/admin/add-lecturer");
   }
 
   return (
-    <main className='content'>
+    <main className="content">
       <div id="content" className="px-4 mx-auto table-responsive">
         <div className="contentwrapper d-flex flex-column">
           <div className="bar d-flex justify-content-between mb-3 flex-row">
             <h2 id="contentTitle">Lecturers</h2>
-            <button onClick={addLecturer} className="btn btn-primary" type="submit" id="btnTopAction">+ Add Lecturer</button>
+            <button
+              onClick={addLecturer}
+              className="btn btn-primary"
+              type="submit"
+              id="btnTopAction"
+            >
+              + Add Lecturer
+            </button>
           </div>
-          <div className="contentCard p-3 bg-body rounded shadow-sm w-100 h-auto" id="contentCard">
+          <div
+            className="contentCard p-3 bg-body rounded shadow-sm w-100 h-auto"
+            id="contentCard"
+          >
             <div className="d-flex text-muted">
-              <table className='table table-hover table-responsive table-alignment'>
+              <table className="table table-hover table-responsive table-alignment">
                 <thead>
                   <tr>
                     <th>First Name</th>
@@ -49,14 +62,26 @@ function LecturerList() {
                   </tr>
                 </thead>
                 <tbody>
-                  {lecturers.map(lecturer => (
+                  {lecturers.map((lecturer) => (
                     <tr key={lecturer.id}>
                       <td>{lecturer.firstName}</td>
                       <td>{lecturer.lastName}</td>
                       <td>{lecturer.email}</td>
-                      <td className='right-align-content'>
-                        <button onClick={() => navigator(`/admin/edit-lecturer/${lecturer.id}`)} className='btn btn-primary btn-small'>Edit</button>
-                        <button onClick={() => deleteLecturerById(lecturer.id)} className='btn btn-danger btn-small ms-2'>Delete</button>
+                      <td className="right-align-content">
+                        <button
+                          onClick={() =>
+                            navigate(`/admin/edit-lecturer/${lecturer.id}`)
+                          }
+                          className="btn btn-primary btn-small"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => deleteLecturerById(lecturer.id)}
+                          className="btn btn-danger btn-small ms-2"
+                        >
+                          Delete
+                        </button>
                       </td>
                     </tr>
                   ))}

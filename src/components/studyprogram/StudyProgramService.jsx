@@ -49,20 +49,16 @@ async function saveStudyProgram(studyProgram) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
-    // Parse the response as JSON
     const savedStudyProgram = await response.json();
-
-    // Ensure the response contains an ID
     if (!savedStudyProgram || !savedStudyProgram.id) {
       throw new Error(
         "Invalid response from server: Study program ID is missing."
       );
     }
-
     return savedStudyProgram;
   } catch (error) {
     console.error("Error saving study program:", error);
-    throw error; // Re-throw the error to be handled by the caller
+    throw error;
   }
 }
 
@@ -176,7 +172,6 @@ async function removeLecturerFromStudyProgram(studyProgramId, lecturerId) {
   }
 }
 
-// Export all functions
 export {
   fetchStudyPrograms,
   fetchStudyProgram,
