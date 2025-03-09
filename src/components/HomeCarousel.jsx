@@ -51,7 +51,7 @@ function HomeCarousel() {
         overflow: "hidden",
       }}
     >
-      <Carousel activeIndex={index} onSelect={handleSelect} interval={5000}>
+      <Carousel activeIndex={index} onSelect={handleSelect} interval={3000}>
         {data.map((slide, i) => (
           <Carousel.Item key={i} style={{ height: "100vh" }}>
             <img

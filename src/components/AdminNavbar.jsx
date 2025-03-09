@@ -45,8 +45,8 @@ function AdminNavbar(props) {
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#Impressum">
-                Impressum
+              <a className="nav-link" href="/admin/lecturer-dashboard">
+                Dashboard
               </a>
             </li>
           </ul>
