@@ -1,5 +1,4 @@
 #root {
-
   margin: 0 auto;
   text-align: center;
 }
@@ -43,12 +42,10 @@
   color: #888;
 }
 
-
-
 :root {
-  --primary-color: rgb(38, 34, 98);
-  --secondary-color: rgb(201, 32, 139);
-  --secondary-hover-color: rgb(206, 147, 216);
+  --primary-color: #216869;
+  --secondary-color: #49a078;
+  --secondary-hover-color: #9cc5a1;
   --light-grey: rgb(241, 243, 243);
   --darker-grey: rgb(212, 218, 218);
 }
@@ -65,14 +62,13 @@
 
 .sidebar .nav-link {
   display: block;
-  padding: .5rem 1rem;
+  padding: 0.5rem 1rem;
   color: var(--primary-color);
   text-decoration: none;
-
 }
 
 .sidebar-icon {
-  color: rgb(201, 32, 139);
+  color: var(--primary-color);
   font-size: 1rem;
 }
 
@@ -84,7 +80,6 @@
 
 .nav-item {
   width: 100%;
-
 }
 
 .nav-link {
@@ -92,10 +87,23 @@
   /* Ensures icons and text align properly */
   align-items: center;
   /* Vertically aligns items within link */
+  transition: transform 0.3s ease-in-out;
+  /* Smooth transition for active effect */
 }
 
-
-
+.nav-link.active {
+  background-color: var(--light-grey);
+  color: #000;
+  transform: translateX(20px);
+  max-width: 100%;
+  border-radius: 2rem;
+}
+.nav-link.active .sidebar-icon {
+  color: var(--secondary-color);
+}
+.nav-link.active .sidebar-text {
+  color: var(--secondary-color);
+}
 
 /* style for the sidebar and footer*/
 
@@ -105,6 +113,8 @@
   padding-bottom: 1rem !important;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+  padding-right: 2rem;
 }
 
 .page-container {
@@ -116,13 +126,11 @@
 }
 
 .content-container {
-
   display: flex;
   flex-direction: row;
   flex: 1;
   min-width: 100%;
   padding-top: 1.5rem;
-
 }
 
 .footer {
@@ -135,7 +143,6 @@ main {
   flex-grow: 1;
   background: #f7f5f5;
   padding-top: 1.5rem;
-
 }
 
 .table-alignment th,
@@ -146,7 +153,6 @@ main {
 .table-alignment td:last-child {
   text-align: right;
 }
-
 
 /* Button */
 .btn-primary,
@@ -166,11 +172,6 @@ h5,
 h6 {
   color: var(--primary-color) !important;
 }
-
-
-
-
-
 
 @keyframes App-logo-spin {
   from {
