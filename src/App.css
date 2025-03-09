@@ -1,0 +1,183 @@
+#root {
+
+  margin: 0 auto;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+
+
+:root {
+  --primary-color: rgb(38, 34, 98);
+  --secondary-color: rgb(201, 32, 139);
+  --secondary-hover-color: rgb(206, 147, 216);
+  --light-grey: rgb(241, 243, 243);
+  --darker-grey: rgb(212, 218, 218);
+}
+
+.navbar-custom {
+  background-color: var(--primary-color) !important;
+}
+
+.bg-navbar-bg-color {
+  background-color: var(--primary-color) !important;
+}
+
+/* style for the sidebar and footer*/
+
+.sidebar .nav-link {
+  display: block;
+  padding: .5rem 1rem;
+  color: var(--primary-color);
+  text-decoration: none;
+
+}
+
+.sidebar-icon {
+  color: rgb(201, 32, 139);
+  font-size: 1rem;
+}
+
+.sidebar-list {
+  flex-direction: column;
+  display: flex;
+  width: 100%;
+}
+
+.nav-item {
+  width: 100%;
+
+}
+
+.nav-link {
+  display: flex;
+  /* Ensures icons and text align properly */
+  align-items: center;
+  /* Vertically aligns items within link */
+}
+
+
+
+
+/* style for the sidebar and footer*/
+
+.sidebar {
+  width: 280px;
+  padding-top: 1rem !important;
+  padding-bottom: 1rem !important;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-width: 100vw;
+  color: #000133;
+}
+
+.content-container {
+
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  min-width: 100%;
+  padding-top: 1.5rem;
+
+}
+
+.footer {
+  width: 100%;
+  height: 4rem;
+  background-color: var(--primary-color);
+}
+
+main {
+  flex-grow: 1;
+  background: #f7f5f5;
+  padding-top: 1.5rem;
+
+}
+
+.table-alignment th,
+.table-alignment td {
+  text-align: left;
+  vertical-align: middle;
+}
+.table-alignment td:last-child {
+  text-align: right;
+}
+
+
+/* Button */
+.btn-primary,
+.btn-primary:focus {
+  color: white !important;
+  background-color: var(--secondary-color) !important;
+  border: 1px solid var(--secondary-color) !important;
+  font-weight: bolder !important;
+}
+
+/* Header color */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--primary-color) !important;
+}
+
+
+
+
+
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}

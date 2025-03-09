@@ -1,0 +1,19 @@
+
+import React from 'react';
+import Navbar from '../layouts/Navbar';
+
+import HomeCarousel from '../layouts/HomeCarousel';
+
+
+
+
+function HomeView() {
+  return (
+    <div>
+      <Navbar />
+      <HomeCarousel />
+    </div>
+  );
+}
+
+export default HomeView;
