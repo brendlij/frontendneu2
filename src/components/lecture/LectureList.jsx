@@ -1,28 +1,37 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { deleteLecture, fetchLectures } from "./LectureService";
+import { deleteLecture, fetchLectures, fetchLecture } from "./LectureService";
 
 function LectureList() {
   const [lectures, setLectures] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function loadData() {
-      try {
-        const data = await fetchLectures();
-        setLectures(data);
-      } catch (error) {
-        console.error("Error fetching lectures:", error.message);
-      }
-    }
     loadData();
   }, []);
+
+  async function loadData() {
+    try {
+      const data = await fetchLectures();
+
+      const fullLectures = await Promise.all(
+        data.map(async (item) => {
+          if (typeof item === "number") {
+            return await fetchLecture(item);
+          }
+          return item;
+        })
+      );
+      setLectures(fullLectures);
+    } catch (error) {
+      console.error("Error fetching lectures:", error.message);
+    }
+  }
 
   async function deleteLectureById(id) {
     try {
       await deleteLecture(id);
-      const data = await fetchLectures();
-      setLectures(data);
+      await loadData();
     } catch (error) {
       console.error("Error deleting lecture:", error.message);
     }
@@ -41,7 +50,7 @@ function LectureList() {
             <button
               onClick={addLecture}
               className="btn btn-primary"
-              type="submit"
+              type="button"
               id="btnTopAction"
             >
               + Add Lecture

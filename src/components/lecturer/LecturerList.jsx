@@ -1,28 +1,43 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { deleteLecturer, fetchLecturers } from "./LecturerService";
+import {
+  deleteLecturer,
+  fetchLecturers,
+  fetchLecturer,
+} from "./LecturerService";
 
 function LecturerList() {
   const [lecturers, setLecturers] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function loadData() {
-      try {
-        const data = await fetchLecturers();
-        setLecturers(data);
-      } catch (error) {
-        console.error("Error fetching lecturers:", error.message);
-      }
-    }
     loadData();
   }, []);
+
+  async function loadData() {
+    try {
+      // fetchLecturers liefert gemischte Daten, z. B.:
+      // [ { id: 57, firstName: "Hans", ...}, 58, 59 ]
+      const data = await fetchLecturers();
+
+      const fullLecturers = await Promise.all(
+        data.map(async (item) => {
+          if (typeof item === "number") {
+            return await fetchLecturer(item);
+          }
+          return item;
+        })
+      );
+      setLecturers(fullLecturers);
+    } catch (error) {
+      console.error("Error fetching lecturers:", error.message);
+    }
+  }
 
   async function deleteLecturerById(id) {
     try {
       await deleteLecturer(id);
-      const data = await fetchLecturers();
-      setLecturers(data);
+      await loadData(); // Liste neu laden
     } catch (error) {
       console.error("Error deleting lecturer:", error.message);
     }
@@ -41,7 +56,7 @@ function LecturerList() {
             <button
               onClick={addLecturer}
               className="btn btn-primary"
-              type="submit"
+              type="button"
               id="btnTopAction"
             >
               + Add Lecturer

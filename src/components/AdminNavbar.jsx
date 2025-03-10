@@ -14,7 +14,7 @@ function AdminNavbar(props) {
             alt="Uniplaner Logo"
             style={{ height: "40px", marginRight: "10px" }}
           />
-          Lectivate
+          Dream Planer
         </a>
 
         <button
