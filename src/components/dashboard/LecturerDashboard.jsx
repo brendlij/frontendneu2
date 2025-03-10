@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { fetchLecturers } from "../lecturer/LecturerService";
-import { fetchStudyPrograms } from "../studyprogram/StudyProgramService";
+import { fetchLecturers, fetchLecturer } from "../lecturer/LecturerService";
+import {
+  fetchStudyPrograms,
+  fetchStudyProgram,
+} from "../studyprogram/StudyProgramService";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
 function LecturerDashboard() {
@@ -12,10 +15,30 @@ function LecturerDashboard() {
     fetchAllData();
   }, []);
 
+  // Hilfsfunktion: IDs in vollständige Objekte umwandeln
+  async function unifyData(rawArray, fetchFunction) {
+    return await Promise.all(
+      rawArray.map(async (item) => {
+        if (typeof item === "number") {
+          return await fetchFunction(item);
+        } else {
+          return item;
+        }
+      })
+    );
+  }
+
   const fetchAllData = async () => {
     try {
-      const lecturersData = await fetchLecturers();
-      const studyProgramsData = await fetchStudyPrograms();
+      // 1) Rohe Daten laden
+      let lecturersData = await fetchLecturers();
+      let studyProgramsData = await fetchStudyPrograms();
+
+      // 2) IDs vereinheitlichen -> vollständige Objekte
+      lecturersData = await unifyData(lecturersData, fetchLecturer);
+      studyProgramsData = await unifyData(studyProgramsData, fetchStudyProgram);
+
+      // 3) Im State speichern
       setLecturers(lecturersData);
       setStudyPrograms(studyProgramsData);
     } catch (error) {
@@ -24,15 +47,15 @@ function LecturerDashboard() {
   };
 
   const handleLecturerChange = (e) => {
-    const lecturerId = e.target.value;
-    const lecturer = lecturers.find((l) => l.id === parseInt(lecturerId));
+    const lecturerId = parseInt(e.target.value, 10);
+    const lecturer = lecturers.find((l) => l.id === lecturerId);
     setSelectedLecturer(lecturer || null);
   };
 
   const getLecturerStudyPrograms = () => {
     if (!selectedLecturer) return [];
     return studyPrograms.filter((program) =>
-      program.lecturers.some((lecturer) => lecturer.id === selectedLecturer.id)
+      program.lecturers.some((lect) => lect.id === selectedLecturer.id)
     );
   };
 
